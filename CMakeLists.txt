@@ -22,3 +22,13 @@ else()
     message(FATAL_ERROR "libbotan not found!")
 endif()
 
+if (NOT WIN32)
+    find_library(TBB_LIBRARY NAMES tbb)
+    if (TBB_LIBRARY)
+        target_link_libraries(rm_dupes ${TBB_LIBRARY})
+    else()
+        message(FATAL_ERROR "libtbb not found!")
+    endif()
+
+    target_link_libraries(rm_dupes pthread)
+endif()

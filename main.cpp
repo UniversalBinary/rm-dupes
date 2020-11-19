@@ -1,9 +1,5 @@
 #include <iostream>
 #include <string>
-#include <sstream>
-#include <vector>
-#include <bitset>
-#include <filesystem>
 #include <list>
 #include <boost/program_options.hpp>
 #include <duplicate_files_scanner.hpp>
@@ -45,6 +41,32 @@ inline void print_help(const boost::program_options::options_description &desc)
 {
     print_usage(desc);
     print_version(desc);
+}
+
+// Callbacks
+
+void scan_started_callback(const std::filesystem::path& search_path)
+{
+    std::cout << "Starting scan of directory " << search_path << "...\n";
+}
+
+void scan_progress_callback(const std::filesystem::path& search_path, uintmax_t examined, uintmax_t sets_found)
+{
+    std::locale user_locale("");
+    std::cout.imbue(user_locale);
+    std::cout << "Files examined: " << examined << ", duplicate sets found: " << sets_found << "\r";
+}
+
+void scan_completed_callback(const std::filesystem::path& , uintmax_t examined, uintmax_t sets_found)
+{
+    std::locale user_locale("");
+    std::cout.imbue(user_locale);
+    std::cout << "scan completed, with " << examined << " files examined and " << sets_found << " duplicate sets found." << std::endl;
+}
+
+void scan_error_callback(const std::filesystem::path& search_path, const std::filesystem::path& error_file, const std::error_condition& error)
+{
+    std::cerr << "An error occurred while scanning the file " << error_file << " - " << error.message() << std::endl;
 }
 
 int main(int argc, char **argv)
@@ -115,7 +137,41 @@ int main(int argc, char **argv)
         scanner.set_minimum_size(min_size);
         scanner.set_maximum_size(max_size);
         scanner.set_skip_hidden_files(skip_hidden);
+
+        if (!quiet)
+        {
+            scanner.set_scan_started_callback(scan_started_callback);
+            scanner.set_scan_progress_callback(scan_progress_callback);
+            scanner.set_scan_completed_callback(scan_completed_callback);
+            scanner.set_scan_error_callback(scan_error_callback);
+        }
+
         scanner.perform_scan(search_directory, recurse);
+
+        std::cout << "\nTesting forward iterator:\n\n";
+
+        size_t i = 1;
+        for (const auto& ds : scanner)
+        {
+            std::cout << "Set " << i++ << "\n";
+            for (const auto& dp : ds)
+            {
+                std::cout << " " << dp << "\n";
+            }
+        }
+
+        std::cout << "\nTesting reverse iterator:\n\n";
+
+        i--;
+        for (auto it = scanner.rbegin(); it != scanner.rend(); it++)
+        {
+            const auto& ds = *it;
+            std::cout << "Set " << i-- << "\n";
+            for (const auto& dp : ds)
+            {
+                std::cout << " " << dp << "\n";
+            }
+        }
 
         return 0;
     }
