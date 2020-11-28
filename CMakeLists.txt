@@ -1,11 +1,11 @@
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 3.16)
 project(rm_dupes)
 
 set(CMAKE_CXX_STANDARD 20)
 
 include_directories(oasis)
 
-find_package(Boost COMPONENTS program_options regex REQUIRED)
+find_package(Boost 1.75 COMPONENTS program_options regex filesystem thread chrono REQUIRED)
 include_directories(${Boost_INCLUDE_DIR})
 
 add_executable(rm_dupes main.cpp)
