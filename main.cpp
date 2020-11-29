@@ -63,12 +63,12 @@ void scan_started_callback(const boost::filesystem::path& search_path)
     std::cout << "Starting scan of directory " << search_path << "...\n";
 }
 
-void scan_progress_callback(const boost::filesystem::path& search_path, uintmax_t examined, uintmax_t sets_found)
+void scan_progress_callback(const boost::filesystem::path& search_path, uintmax_t files_encountered, uintmax_t sets_found)
 {
     std::locale user_locale("");
     std::cout.imbue(user_locale);
     std::cout << "Searching path " << search_path << "\n";
-    std::cout << "Files examined: " << examined << ", duplicate sets found: " << sets_found << "\n";
+    std::cout << "Files encountered: " << files_encountered << ", duplicate sets found: " << sets_found << "\n";
 }
 
 void scan_completed_callback(const boost::filesystem::path& search_path, uintmax_t examined, uintmax_t duplicate_file_count, uintmax_t sets_found, uintmax_t space_occupied)
