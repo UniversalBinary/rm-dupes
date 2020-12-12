@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <list>
+#include <bitset>
 #include <boost/program_options.hpp>
 #include <duplicate_files_scanner.hpp>
 
@@ -120,8 +121,8 @@ int main(int argc, char **argv)
             ("size,b", boost::program_options::bool_switch(&size_sort), "List the duplicate files, in each set, in order of their size.")
             ("descending", boost::program_options::bool_switch(&descending), "Files will be sorted in descending order.");
 
-    try
-    {
+   /* try
+    { */
         // Set up positional options
         boost::program_options::positional_options_description p;
         p.add("search-directory", 1);
@@ -194,12 +195,12 @@ int main(int argc, char **argv)
         if (sort_opts.test(SORT_FILE_SIZE)) return perform_operation<oasis::filesystem::sort_by_file_size>(search_directory, op_flags);
 
         return 0;
-    }
+   /* }
     catch (const std::exception &ex)
     {
         std::cerr << "Fatal error: " << ex.what() << std::endl;
         return 1;
-    }
+    } */
 }
 
 template<typename T>
