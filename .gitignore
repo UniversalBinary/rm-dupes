@@ -7,9 +7,17 @@ Makefile
 cmake_install.cmake
 install_manifest.txt
 compile_commands.json
+launch.json
+settings.json
 CTestTestfile.cmake
 _deps
 cmake-build-debug
 cmake-build-release
 .idea
+out
+build
+.vs
+.vscode
+.cache
+
 
